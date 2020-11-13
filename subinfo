@@ -1,0 +1,65 @@
+#!/bin/bash
+
+trap ctrl_c INT
+
+function ctrl_c() {
+        printf '\nBye!\n'
+        rm out1 out2 out3 subs1 subs2 subs3 take1 take2 results
+        exit 1
+} 2>/dev/null
+
+if [ -z $1 ]
+then
+        echo 'Usage: subinfo <domain list>'
+        exit 1
+fi
+
+echo '[*] Enumerating subdomains...'
+
+while read line
+do
+	for var in $line
+	do
+		echo $var
+
+		subfinder -timeout 10 -silent -d $var > out1
+		cat out1 >> subs1
+
+		assetfinder -subs-only $var > out2
+	        cat out2 >> subs2
+
+		amass enum -silent -nolocaldb -passive -d $var -o out3 &> /dev/null
+		cat out3 >> subs3
+
+		rm out1 out2 out3
+	done
+done < $1
+
+sort -u subs1 subs2 subs3 > allsubs
+rm subs1 subs2 subs3
+
+echo '[*] Testing for subdomain takeover...'
+
+subjack -w allsubs -timeout 5 -t 20 -a -o take1 &> /dev/null
+subjack -w allsubs -timeout 5 -t 20 -a -ssl -o take2 &> /dev/null
+
+if [ -s take1 ] && [ -s take2 ]
+then
+	sort -u take1 take2 > results
+	cat results
+	rm take1 take2 results
+elif [ -s take1 ]
+then
+	cat take1
+	rm take1
+elif [ -s take2 ]
+then
+	cat take2
+	rm take2
+fi
+
+echo '[*] Identifying live hosts...'
+
+cat allsubs | httprobe > livesubs
+
+echo '[*] Done.'
