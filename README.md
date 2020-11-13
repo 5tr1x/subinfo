@@ -4,11 +4,22 @@ Discovers subdomains, filters live hosts, and checks for possible subdomain take
 
 <h2>Requirements</h2>
 
-t
+[subfinder](https://github.com/projectdiscovery/subfinder)
+
+[assetfinder](https://github.com/tomnomnom/assetfinder)
+
+[amass](https://github.com/OWASP/Amass)
+
+[subjack](https://github.com/haccer/subjack)
+
+[httprobe](https://github.com/tomnomnom/httprobe)
 
 <h2>Features</h2>
 
-- test
+- takes list of domains as input and combines results of 3 subdomain enumeration tools
+- tests for possible subdomain takeover 
+- identifies live hosts
+- saves output of all subdomains and live subdomains
 
 <h2>Usage</h2>
 
