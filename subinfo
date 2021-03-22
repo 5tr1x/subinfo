@@ -1,44 +1,43 @@
 #!/bin/bash
 
-#TODO - eyewitness, naabu, nuclei, favfreak
+#TODO - eyewitness, naabu, nuclei, favfreak, s3
 
 trap ctrl_c INT
 
 function ctrl_c() {
         printf '\nBye!\n'
-        rm out1 out2 out3 subs1 subs2 subs3 take1 take2 results
+        rm out1 out2 out3 subs1 subs2 subs3 allsubs take1 take2 results
         exit 1
 } 2>/dev/null
 
 if [ -z $1 ]
 then
-        echo 'Usage: subinfo <domain list>'
+        echo 'Usage: subinfo <domain>'
         exit 1
 fi
 
 echo '[*] Enumerating subdomains...'
 
-while read line
-do
-	for var in $line
-	do
-		echo $var
+echo $1
 
-		subfinder -timeout 10 -silent -d $var > out1
-		cat out1 >> subs1
+subfinder -timeout 10 -silent -d $1 > out1
+cat out1 >> subs1
 
-		assetfinder -subs-only $var > out2
-	        cat out2 >> subs2
+assetfinder -subs-only $1 > out2
+cat out2 >> subs2
 
-		amass enum -silent -nolocaldb -passive -d $var -o out3 &> /dev/null
-		cat out3 >> subs3
+amass enum -silent -nolocaldb -passive -d $1 -o out3 &> /dev/null
+cat out3 >> subs3
 
-		rm out1 out2 out3
-	done
-done < $1
+rm out1 out2 out3
 
 sort -u subs1 subs2 subs3 > allsubs
 rm subs1 subs2 subs3
+
+echo '[*] Identifying live hosts...'
+
+live=$(echo $1-live)
+cat allsubs | httprobe > $live
 
 echo '[*] Testing for subdomain takeover...'
 
@@ -60,8 +59,5 @@ then
 	rm take2
 fi
 
-echo '[*] Identifying live hosts...'
-
-cat allsubs | httprobe > livesubs
-
+rm allsubs
 echo '[*] Done.'
