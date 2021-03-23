@@ -6,7 +6,8 @@ trap ctrl_c INT
 
 function ctrl_c() {
         printf '\nBye!\n'
-        rm out1 out2 out3 subs1 subs2 subs3 allsubs take1 take2 results
+	cd ..
+	rm -r $temp $results
         exit 1
 } 2>/dev/null
 
@@ -15,6 +16,13 @@ then
         echo 'Usage: subinfo <domain>'
         exit 1
 fi
+
+temp=$(echo temp-$1)
+results=$(echo results-$1)
+rm -r $temp $results 2>/dev/null
+mkdir $temp $results
+
+cd $temp
 
 ### SUBDOMAIN ENUM ###
 
@@ -29,31 +37,26 @@ cat out2 >> subs2
 amass enum -silent -nolocaldb -passive -d $1 -o out3 &> /dev/null
 cat out3 >> subs3
 
-rm out1 out2 out3
-
 sort -u subs1 subs2 subs3 > allsubs
-rm subs1 subs2 subs3
 
 ### HOST DISCOVERY ###
 
 echo '[*] Identifying live hosts...'
 
-live=$(echo live-hosts-$1)
-cat allsubs | httprobe > $live
+cat allsubs | httprobe > ../$results/live-hosts
 
 ### S3 BUCKETS ###
 
 echo '[*] Finding S3 buckets...'
 
 s3scanner allsubs 2>&1 | grep -F [found] > s3
-rm buckets.txt
+
+echo '*** S3 BUCKETS ***' >> ../$results/all-results
+echo '' >> ../$results/all-results
 
 if [ -s s3 ]
 then
-        cat s3
-        rm s3
-else
-        rm s3
+        cat s3 | cut -f4 -d ':' | sed 's/ //' >> ../$results/all-results
 fi
 
 ### SUBDOMAIN TAKEOVER ###
@@ -63,33 +66,42 @@ echo '[*] Testing for subdomain takeover...'
 subjack -w allsubs -timeout 5 -t 20 -a -o take1 &> /dev/null
 subjack -w allsubs -timeout 5 -t 20 -a -ssl -o take2 &> /dev/null
 
+echo '' >> ../$results/all-results
+echo '*** SUBDOMAIN TAKEOVER ***' >> ../$results/all-results
+echo '' >> ../$results/all-results
+
 if [ -s take1 ] && [ -s take2 ]
 then
-	sort -u take1 take2 > results
-	cat results
-	rm take1 take2 results
+	sort -u take1 take2 > to
+	cat to >> ../$results/all-results
 elif [ -s take1 ]
 then
-	cat take1
-	rm take1
+	cat take1 >> ../$results/all-results
 elif [ -s take2 ]
 then
-	cat take2
-	rm take2
+	cat take2 >> ../$results/all-results
 fi
 
 ### FAVICON RECON ###
 
 echo '[*] Performing favicon recon...'
-cat $live | favfreak.py | sed -n '/FingerPrint/,/Summary/p' | head -n -4 | tail -n +3 > fav
+
+cat ../$results/live-hosts | favfreak.py | sed -n '/FingerPrint/,/Summary/p' | head -n -4 | tail -n +3 > fav
+
+echo '' >> ../$results/all-results
+echo '*** FAVICON RECON ***' >> ../$results/all-results
+echo '' >> ../$results/all-results
 
 if [ -s fav ]
 then
-	cat fav
-	rm fav
-else
-	rm fav
+	cat fav >> ../$results/all-results
 fi
 
-rm allsubs
+cd ..
+rm -r $temp
+
+echo '[*] Preparing results...'
+echo ''
+cat $results/all-results
+
 echo '[*] Done.'
