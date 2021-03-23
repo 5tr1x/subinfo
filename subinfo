@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#TODO - eyewitness, naabu, nuclei, favfreak, s3
+#TODO - eyewitness, naabu, nuclei
 
 trap ctrl_c INT
 
@@ -16,9 +16,9 @@ then
         exit 1
 fi
 
-echo '[*] Enumerating subdomains...'
+### SUBDOMAIN ENUM ###
 
-echo $1
+echo '[*] Enumerating subdomains...'
 
 subfinder -timeout 10 -silent -d $1 > out1
 cat out1 >> subs1
@@ -34,10 +34,29 @@ rm out1 out2 out3
 sort -u subs1 subs2 subs3 > allsubs
 rm subs1 subs2 subs3
 
+### HOST DISCOVERY ###
+
 echo '[*] Identifying live hosts...'
 
-live=$(echo $1-live)
+live=$(echo live-hosts-$1)
 cat allsubs | httprobe > $live
+
+### S3 BUCKETS ###
+
+echo '[*] Finding S3 buckets...'
+
+s3scanner allsubs 2>&1 | grep -F [found] > s3
+rm buckets.txt
+
+if [ -s s3 ]
+then
+        cat s3
+        rm s3
+else
+        rm s3
+fi
+
+### SUBDOMAIN TAKEOVER ###
 
 echo '[*] Testing for subdomain takeover...'
 
@@ -57,6 +76,19 @@ elif [ -s take2 ]
 then
 	cat take2
 	rm take2
+fi
+
+### FAVICON RECON ###
+
+echo '[*] Performing favicon recon...'
+cat $live | favfreak.py | sed -n '/FingerPrint/,/Summary/p' | head -n -4 | tail -n +3 > fav
+
+if [ -s fav ]
+then
+	cat fav
+	rm fav
+else
+	rm fav
 fi
 
 rm allsubs
