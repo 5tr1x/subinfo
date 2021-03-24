@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#TODO - eyewitness, naabu
+#TODO - eyewitness
 
 trap ctrl_c INT
 
@@ -28,7 +28,7 @@ cd $temp
 
 echo '[*] Enumerating subdomains...'
 
-subfinder -timeout 10 -silent -d $1 > out1
+subfinder -timeout 10 -t 20 -silent -d $1 > out1
 cat out1 >> subs1
 
 assetfinder -subs-only $1 > out2
@@ -43,7 +43,16 @@ sort -u subs1 subs2 subs3 > allsubs
 
 echo '[*] Identifying live hosts...'
 
-cat allsubs | httprobe > ../$results/live-hosts
+cat allsubs | httprobe -t 5000 -c 40 > ../$results/live-hosts
+
+### ADDITIONAL PORTS ###
+
+echo '[*] Checking additional ports...'
+
+echo '*** ADDITIONAL PORTS ***' >> ../$results/all-results
+echo '' >> ../$results/all-results
+
+naabu -iL allsubs --exclude-ports 22,25,53,80,443 -c 40 -silent >> ../$results/all-results
 
 ### S3 BUCKETS ###
 
@@ -51,6 +60,7 @@ echo '[*] Finding S3 buckets...'
 
 s3scanner allsubs 2>&1 | grep -F [found] > s3
 
+echo '' >> ../$results/all-results
 echo '*** S3 BUCKETS ***' >> ../$results/all-results
 echo '' >> ../$results/all-results
 
@@ -63,8 +73,8 @@ fi
 
 echo '[*] Testing for subdomain takeover...'
 
-subjack -w allsubs -timeout 5 -t 20 -a -o take1 &> /dev/null
-subjack -w allsubs -timeout 5 -t 20 -a -ssl -o take2 &> /dev/null
+subjack -w allsubs -timeout 3 -t 20 -a -o take1 &> /dev/null
+subjack -w allsubs -timeout 3 -t 20 -a -ssl -o take2 &> /dev/null
 
 echo '' >> ../$results/all-results
 echo '*** SUBDOMAIN TAKEOVER ***' >> ../$results/all-results
@@ -85,6 +95,8 @@ fi
 for i in $(cat allsubs); do echo http://$i >> ntake; done
 nuclei -ud /opt/tools/nuclei/ -t takeovers -l ntake -c 20 -silent | cut -f3,6 -d ' ' >> ../$results/all-results
 
+nuclei -ud /opt/tools/nuclei/ -t dns/azure-takeover-detection.yaml -l allsubs -c 20 -silent | cut -f3,6 -d ' ' >> ../$results/all-results
+
 ### FAVICON RECON ###
 
 echo '[*] Performing favicon recon...'
@@ -99,6 +111,8 @@ if [ -s fav ]
 then
 	cat fav >> ../$results/all-results
 fi
+
+### END ###
 
 cd ..
 rm -r $temp
