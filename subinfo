@@ -73,27 +73,19 @@ fi
 
 echo '[*] Testing for subdomain takeover...'
 
-subjack -w allsubs -timeout 3 -t 20 -a -o take1 &> /dev/null
-subjack -w allsubs -timeout 3 -t 20 -a -ssl -o take2 &> /dev/null
+subjack -w allsubs -timeout 3 -t 20 -a -ssl -o take1 &> /dev/null
 
 echo '' >> ../$results/all-results
 echo '*** SUBDOMAIN TAKEOVER ***' >> ../$results/all-results
 echo '' >> ../$results/all-results
 
-if [ -s take1 ] && [ -s take2 ]
-then
-	sort -u take1 take2 > to
-	cat to >> ../$results/all-results
-elif [ -s take1 ]
+if [ -s take1 ]
 then
 	cat take1 >> ../$results/all-results
-elif [ -s take2 ]
-then
-	cat take2 >> ../$results/all-results
 fi
 
-for i in $(cat allsubs); do echo http://$i >> ntake; done
-nuclei -ud /opt/tools/nuclei/ -t takeovers -l ntake -c 20 -silent | cut -f3,6 -d ' ' >> ../$results/all-results
+for i in $(cat allsubs); do echo http://$i >> take2; done
+nuclei -ud /opt/tools/nuclei/ -t takeovers -l take2 -c 20 -silent | cut -f3,6 -d ' ' >> ../$results/all-results
 
 nuclei -ud /opt/tools/nuclei/ -t dns/azure-takeover-detection.yaml -l allsubs -c 20 -silent | cut -f3,6 -d ' ' >> ../$results/all-results
 
