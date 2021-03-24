@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#TODO - eyewitness, naabu, nuclei
+#TODO - eyewitness, naabu
 
 trap ctrl_c INT
 
@@ -81,6 +81,9 @@ elif [ -s take2 ]
 then
 	cat take2 >> ../$results/all-results
 fi
+
+for i in $(cat allsubs); do echo http://$i >> ntake; done
+nuclei -ud /opt/tools/nuclei/ -t takeovers -l ntake -c 20 -silent | cut -f3,6 -d ' ' >> ../$results/all-results
 
 ### FAVICON RECON ###
 
