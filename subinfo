@@ -1,7 +1,5 @@
 #!/bin/bash
 
-#TODO - eyewitness
-
 trap ctrl_c INT
 
 function ctrl_c() {
@@ -103,6 +101,12 @@ if [ -s fav ]
 then
 	cat fav >> ../$results/all-results
 fi
+
+### SCREENSHOTS ###
+
+echo '[*] Taking screenshots...'
+
+eyewitness -f ../$results/live-hosts -d ../$results/screenshots --no-prompt &> /dev/null
 
 ### END ###
 
