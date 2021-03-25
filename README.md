@@ -1,6 +1,6 @@
 <h2>Description</h2>
 
-Discovers subdomains, filters live hosts, and checks for possible subdomain takeover
+All-in-one recon tool for bug bounties
 
 <h2>Requirements</h2>
 
@@ -10,17 +10,31 @@ Discovers subdomains, filters live hosts, and checks for possible subdomain take
 
 [amass](https://github.com/OWASP/Amass)
 
+[httprobe](https://github.com/tomnomnom/httprobe)
+
+[naabu](https://github.com/projectdiscovery/naabu)
+
+[s3scanner](https://github.com/sa7mon/S3Scanner)
+
 [subjack](https://github.com/haccer/subjack)
 
-[httprobe](https://github.com/tomnomnom/httprobe)
+[nuclei](https://github.com/projectdiscovery/nuclei)
+
+[favfreak](https://github.com/devanshbatham/FavFreak)
+
+[gowitness](https://github.com/sensepost/gowitness)
 
 <h2>Features</h2>
 
-- takes list of domains as input and combines results of 3 subdomain enumeration tools
-- tests for possible subdomain takeover 
+- enumerates subdomains
 - identifies live hosts
-- saves output of all subdomains and live subdomains
+- checks additional open ports
+- finds S3 buckets
+- tests for possible subdomain takeover 
+- recon based on favicons
+- provides Google dork for quick wins
+- takes screenshots of live urls
 
 <h2>Usage</h2>
 
-`subinfo <domain list>`
+`subinfo <domain>`
