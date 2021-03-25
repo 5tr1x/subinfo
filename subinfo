@@ -1,7 +1,5 @@
 #!/bin/bash
 
-#TODO: nuclei, dorks, ?
-
 trap ctrl_c INT
 
 function ctrl_c() {
@@ -104,11 +102,21 @@ then
 	cat fav >> ../$results/all-results
 fi
 
+### EXTRA ###
+
+echo '' >> ../$results/all-results
+echo '*** EXTRA ***' >> ../$results/all-results
+echo '' >> ../$results/all-results
+
+echo '[!] Dork:' >> ../$results/all-results
+echo 'test' >> ../$results/all-results
+
 ### SCREENSHOTS ###
 
 echo '[*] Taking screenshots...'
 
-eyewitness -f ../$results/live-hosts -d ../$results/screenshots --no-prompt &> /dev/null
+mkdir ../$results/screenshots
+gowitness file -f ../$results/live-hosts -P ../$results/screenshots -D ../$results/screenshots/gowitness.sqlite3 -t 20 &> /dev/null
 
 ### END ###
 
@@ -116,7 +124,9 @@ cd ..
 rm -r $temp
 
 echo '[*] Preparing results...'
+sleep 3
 echo ''
 cat $results/all-results
 
+echo ''
 echo '[*] Done.'
