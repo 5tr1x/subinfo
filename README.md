@@ -1,6 +1,6 @@
 <h2>Description</h2>
 
-All-in-one recon tool for bug bounties
+All-in-one recon tool for bug bounty hunting
 
 <h2>Requirements</h2>
 
@@ -32,7 +32,7 @@ All-in-one recon tool for bug bounties
 - finds S3 buckets
 - tests for possible subdomain takeover 
 - recon based on favicons
-- provides Google dork for quick wins
+- generates Google dork for quick wins
 - takes screenshots of live urls
 
 <h2>Usage</h2>
