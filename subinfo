@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#TODO: auto open gowitness report
+#TODO: gowitness help, aem
 
 trap ctrl_c INT
 
