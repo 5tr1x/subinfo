@@ -52,7 +52,7 @@ echo '[*] Checking additional ports...'
 echo '*** ADDITIONAL PORTS ***' >> ../$results/all-results
 echo '' >> ../$results/all-results
 
-naabu -iL allsubs --exclude-ports 22,25,53,80,443 -c 50 -silent >> ../$results/all-results
+naabu -iL allsubs --exclude-ports 25,53,80,443 -c 50 -silent >> ../$results/all-results
 
 ### S3 BUCKETS ###
 
