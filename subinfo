@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#TODO: gowitness help, aem
+#TODO: gowitness help, aem, log4j, vulns, options
 
 trap ctrl_c INT
 
