@@ -28,7 +28,7 @@ cd $temp
 
 echo '[*] Enumerating subdomains...'
 
-subfinder -timeout 5 -t 40 -silent -d $1 -o out1 &> /dev/null
+subfinder -timeout 5 -t 20 -silent -d $1 -o out1 &> /dev/null
 cat out1 >> subs1
 
 assetfinder -subs-only $1 > out2
@@ -43,7 +43,7 @@ sort -u subs1 subs2 subs3 > allsubs
 
 echo '[*] Identifying live hosts...'
 
-cat allsubs | httprobe -t 5000 -c 50 > ../$results/live-hosts
+cat allsubs | httprobe -t 5000 -c 40 > ../$results/live-hosts
 
 ### ADDITIONAL PORTS ###
 
@@ -73,7 +73,7 @@ fi
 
 echo '[*] Testing for subdomain takeover...'
 
-subjack -w allsubs -timeout 3 -t 30 -a -ssl -o take1 &> /dev/null
+subjack -w allsubs -timeout 5 -t 20 -a -ssl -o take1 &> /dev/null
 
 echo '' >> ../$results/all-results
 echo '*** SUBDOMAIN TAKEOVER ***' >> ../$results/all-results
@@ -85,9 +85,9 @@ then
 fi
 
 for i in $(cat allsubs); do echo http://$i >> take2; done
-nuclei -ud /opt/tools/nuclei-templates/ -t takeovers -l take2 -c 40 -silent | cut -f3,6 -d ' ' >> ../$results/all-results
+nuclei -ud /opt/tools/nuclei-templates/ -t takeovers -l take2 -silent | cut -f3,6 -d ' ' >> ../$results/all-results
 
-nuclei -ud /opt/tools/nuclei-templates/ -t dns/azure-takeover-detection.yaml -l allsubs -c 40 -silent | cut -f3,6 -d ' ' >> ../$results/all-results
+nuclei -ud /opt/tools/nuclei-templates/ -t dns/azure-takeover-detection.yaml -l allsubs -silent | cut -f3,6 -d ' ' >> ../$results/all-results
 
 ### FAVICON RECON ###
 
@@ -119,7 +119,7 @@ echo "site:$1 ext:config | ext:conf | ext:cnf | ext:cfg | ext:dat | ext:tmp | ex
 echo '[*] Taking screenshots...'
 
 mkdir ../$results/screenshots
-gowitness file -f ../$results/live-hosts -P ../$results/screenshots -D ../$results/screenshots/gowitness.sqlite3 --timeout 5 -t 40 &> /dev/null
+gowitness file -f ../$results/live-hosts -P ../$results/screenshots -D ../$results/screenshots/gowitness.sqlite3 --timeout 5 -t 20 &> /dev/null
 
 ### END ###
 
