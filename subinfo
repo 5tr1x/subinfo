@@ -112,7 +112,7 @@ echo '' >> ../$results/all-results
 echo '*** VULN SCAN ***' >> ../$results/all-results
 echo '' >> ../$results/all-results
 
-nuclei -ud /opt/tools/nuclei-templates/ -es info -t cves,vulnerabilities,misconfiguration,exposures,exposed-panels,miscellaneous -l ../$results/live-hosts -silent | cut -f3- -d ' ' >> ../$results/all-results
+nuclei -ud /opt/tools/nuclei-templates/ -s high,critical -t cves,vulnerabilities,misconfiguration,exposures,exposed-panels,miscellaneous -l ../$results/live-hosts -silent | cut -f3- -d ' ' >> ../$results/all-results
 
 ### EXTRA ###
 
