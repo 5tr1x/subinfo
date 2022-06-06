@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#TODO: gowitness help, aem, log4j, vulns, options, hidden dir
+#TODO: gowitness help, options
 
 trap ctrl_c INT
 
@@ -103,6 +103,16 @@ if [ -s fav ]
 then
 	cat fav >> ../$results/all-results
 fi
+
+### VULN SCAN ###
+
+echo '[*] Running vuln scan...'
+
+echo '' >> ../$results/all-results
+echo '*** VULN SCAN ***' >> ../$results/all-results
+echo '' >> ../$results/all-results
+
+nuclei -ud /opt/tools/nuclei-templates/ -es info -t cves,vulnerabilities,misconfiguration,exposures,exposed-panels,miscellaneous -l ../$results/live-hosts -silent | cut -f3- -d ' ' >> ../$results/all-results
 
 ### EXTRA ###
 
