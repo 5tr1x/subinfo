@@ -43,12 +43,18 @@ sort -u subs1 subs2 subs3 > allsubs
 
 echo '[*] Identifying live hosts...'
 
+echo '*** LIVE HOSTS ***' >> ../$results/all-results
+echo '' >> ../$results/all-results
+
 cat allsubs | httprobe -t 5000 -c 40 > ../$results/live-hosts
+
+echo "Found `wc -l ../$results/live-hosts | cut -f1 -d ' '` live hosts" >> ../$results/all-results
 
 ### ADDITIONAL PORTS ###
 
 echo '[*] Checking additional ports...'
 
+echo '' >> ../$results/all-results
 echo '*** ADDITIONAL PORTS ***' >> ../$results/all-results
 echo '' >> ../$results/all-results
 
@@ -142,4 +148,4 @@ echo ''
 cat $results/all-results
 
 echo ''
-echo '[*] Done.'
+echo '[*] Done!'
