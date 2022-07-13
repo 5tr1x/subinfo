@@ -118,7 +118,7 @@ echo '' >> ../$results/all-results
 echo '*** VULN SCAN ***' >> ../$results/all-results
 echo '' >> ../$results/all-results
 
-nuclei -ud /opt/tools/nuclei-templates/ -s critical -t cves,vulnerabilities -l ../$results/live-hosts -silent | cut -f3- -d ' ' >> ../$results/all-results
+nuclei -ud /opt/tools/nuclei-templates/ -s critical -t cves/ -t vulnerabilities/ -l ../$results/live-hosts -silent | cut -f3- -d ' ' >> ../$results/all-results
 
 ### EXTRA ###
 
