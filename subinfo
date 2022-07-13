@@ -46,7 +46,7 @@ echo '[*] Identifying live hosts...'
 echo '*** LIVE HOSTS ***' >> ../$results/all-results
 echo '' >> ../$results/all-results
 
-cat allsubs | httprobe -t 5000 -c 40 > ../$results/live-hosts
+cat allsubs | httprobe -prefer-https -t 5000 -c 40 > ../$results/live-hosts
 
 echo "Found `wc -l ../$results/live-hosts | cut -f1 -d ' '` live hosts" >> ../$results/all-results
 
