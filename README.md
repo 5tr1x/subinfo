@@ -26,6 +26,7 @@ Recon tool for bug bounty hunting
 - identifies live hosts
 - checks additional open ports
 - tests for possible subdomain takeover 
+- scans for critical vulns
 - takes screenshots of live urls
 
 <h2>Usage</h2>
