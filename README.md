@@ -1,6 +1,6 @@
 <h2>Description</h2>
 
-All-in-one recon tool for bug bounty hunting
+Recon tool for bug bounty hunting
 
 <h2>Requirements</h2>
 
@@ -14,13 +14,9 @@ All-in-one recon tool for bug bounty hunting
 
 [naabu](https://github.com/projectdiscovery/naabu)
 
-[s3scanner](https://github.com/sa7mon/S3Scanner)
-
 [subjack](https://github.com/haccer/subjack)
 
 [nuclei](https://github.com/projectdiscovery/nuclei)
-
-[favfreak](https://github.com/devanshbatham/FavFreak)
 
 [gowitness](https://github.com/sensepost/gowitness)
 
@@ -29,10 +25,7 @@ All-in-one recon tool for bug bounty hunting
 - enumerates subdomains
 - identifies live hosts
 - checks additional open ports
-- finds S3 buckets
 - tests for possible subdomain takeover 
-- recon based on favicons
-- generates Google dork for quick wins
 - takes screenshots of live urls
 
 <h2>Usage</h2>
