@@ -58,40 +58,16 @@ echo '' >> ../$results/all-results
 
 naabu -l allsubs -p 21,22,23,139,445,1433,3306,3389,8000,8080,8443,10000 -rate 100 -silent >> ../$results/all-results
 
-### SUBDOMAIN TAKEOVER ###
-
-echo '[*] Testing for subdomain takeover...'
-
-echo '' >> ../$results/all-results
-echo '*** SUBDOMAIN TAKEOVER ***' >> ../$results/all-results
-echo '' >> ../$results/all-results
-
-subjack -w allsubs -timeout 5 -t 20 -a -ssl -o take1 &> /dev/null
-
-if [ -s take1 ]
-then
-	cat take1 >> ../$results/all-results
-fi
-
-### VULN SCAN ###
-
-echo '[*] Running vuln scan...'
-
-echo '' >> ../$results/all-results
-echo '*** VULN SCAN ***' >> ../$results/all-results
-echo '' >> ../$results/all-results
-
-nuclei -ud /opt/tools/nuclei-templates/ -s critical -t cves/ -t vulnerabilities/ -l ../$results/live-hosts -silent | cut -f3- -d ' ' >> ../$results/all-results
-
 ### SCREENSHOTS ###
 
 echo '[*] Taking screenshots...'
 
 mkdir ../$results/screenshots
-gowitness file -f ../$results/live-hosts -P ../$results/screenshots -D ../$results/screenshots/gowitness.sqlite3 -t 20 &> /dev/null
+gowitness file -f ../$results/live-hosts -P ../$results/screenshots -D sqlite://$results.sqlite3 -t 20 --delay 5 &> /dev/null
+mv $results.sqlite3 ../$results/screenshots/$results.sqlite3
 
 echo '' >> ../$results/all-results
-echo "[!] To view screenshots run: gowitness report serve -D $results/screenshots/gowitness.sqlite3 -P $results/screenshots/" >> ../$results/all-results
+echo "[!] To view screenshots run: cd $results/screenshots && gowitness server -D sqlite://$results.sqlite3 -P . || cd ../.." >> ../$results/all-results
 
 ### END ###
 
