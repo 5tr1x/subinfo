@@ -67,7 +67,7 @@ gowitness file -f ../$results/live-hosts -P ../$results/screenshots -D sqlite://
 mv $results.sqlite3 ../$results/screenshots/$results.sqlite3
 
 echo '' >> ../$results/all-results
-echo "[!] To view screenshots run: cd $results/screenshots && gowitness server -D sqlite://$results.sqlite3 -P . || cd ../.." >> ../$results/all-results
+echo "[!] To view screenshots run: cd $results/screenshots && gowitness server -D sqlite://$results.sqlite3 -P ." >> ../$results/all-results
 
 ### END ###
 
