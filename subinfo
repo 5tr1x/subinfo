@@ -32,7 +32,7 @@ cat out1 >> subs1
 assetfinder -subs-only $1 > out2
 cat out2 >> subs2
 
-amass enum -silent -nolocaldb -passive -d $1 -o out3 &> /dev/null
+amass enum -silent -passive -d $1 -o out3 &> /dev/null
 cat out3 >> subs3
 
 sort -u subs1 subs2 subs3 > allsubs
