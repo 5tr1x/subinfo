@@ -8,15 +8,9 @@ Recon tool for bug bounty hunting
 
 [assetfinder](https://github.com/tomnomnom/assetfinder)
 
-[amass](https://github.com/OWASP/Amass)
-
 [httprobe](https://github.com/tomnomnom/httprobe)
 
 [naabu](https://github.com/projectdiscovery/naabu)
-
-[subjack](https://github.com/haccer/subjack)
-
-[nuclei](https://github.com/projectdiscovery/nuclei)
 
 [gowitness](https://github.com/sensepost/gowitness)
 
@@ -25,8 +19,6 @@ Recon tool for bug bounty hunting
 - enumerates subdomains
 - identifies live hosts
 - checks additional open ports
-- tests for possible subdomain takeover 
-- scans for critical vulns
 - takes screenshots of live urls
 
 <h2>Usage</h2>
