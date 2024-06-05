@@ -26,16 +26,13 @@ cd $temp
 
 echo '[*] Enumerating subdomains...'
 
-subfinder -timeout 5 -t 20 -silent -d $1 -o out1 &> /dev/null
+subfinder -timeout 10 -t 20 -silent -d $1 -o out1 &> /dev/null
 cat out1 >> subs1
 
 assetfinder -subs-only $1 > out2
 cat out2 >> subs2
 
-amass enum -silent -passive -d $1 -o out3 &> /dev/null
-cat out3 >> subs3
-
-sort -u subs1 subs2 subs3 > allsubs
+sort -u subs1 subs2 > allsubs
 
 ### HOST DISCOVERY ###
 
@@ -44,7 +41,7 @@ echo '[*] Identifying live hosts...'
 echo '*** LIVE HOSTS ***' >> ../$results/all-results
 echo '' >> ../$results/all-results
 
-cat allsubs | httprobe -prefer-https -t 5000 -c 40 > ../$results/live-hosts
+cat allsubs | httprobe -prefer-https -c 40 > ../$results/live-hosts
 
 echo "Found `wc -l ../$results/live-hosts | cut -f1 -d ' '` live hosts" >> ../$results/all-results
 
@@ -56,7 +53,7 @@ echo '' >> ../$results/all-results
 echo '*** ADDITIONAL PORTS ***' >> ../$results/all-results
 echo '' >> ../$results/all-results
 
-naabu -l allsubs -p 21,22,23,139,445,1433,3306,3389,8000,8080,8443,10000 -rate 100 -silent >> ../$results/all-results
+naabu -l allsubs -p 21,445,1433,3000,3306,3389,5000,8000,8080,8443,10000 -rate 100 -silent >> ../$results/all-results
 
 ### SCREENSHOTS ###
 
