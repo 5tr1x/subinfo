@@ -1,14 +1,14 @@
-#!/bin/bash
-
-trap ctrl_c INT
-
-function ctrl_c() {
-        printf '\nBye!\n'
-	cd ..
-	rm -r $temp $results
-        exit 1
-} 2>/dev/null
-
+#!/bin/bash                                                                                                                                                                                                                                                                                                                   
+                                                                                                                                                                                                                                                                                                                              
+trap ctrl_c INT                                                                                                                                                                                                                                                                                                               
+                                                                                                                                                                                                                                                                                                                              
+function ctrl_c() {                                                                                                                                                                                                                                                                                                           
+        printf '\nBye!\n'                                                                                                                                                                                                                                                                                                     
+        cd ..                                                                                                                                                                                                                                                                                                                 
+        rm -r $temp $results                                                                                                                                                                                                                                                                                                  
+        exit 1                                                                                                                                                                                                                                                                                                                
+} 2>/dev/null                                                                                                                                                                                                                                                                                                                 
+                                                                                                                                                                                                                                                                                                                              
 if [ -z $1 ]
 then
         echo 'Usage: subinfo <domain>'
@@ -26,13 +26,17 @@ cd $temp
 
 echo '[*] Enumerating subdomains...'
 
-subfinder -timeout 10 -t 20 -silent -d $1 -o out1 &> /dev/null
+theharvester -d $1 -l 5000 -b anubis,baidu,bing,brave,certspotter,crtsh,duckduckgo,hackertarget,otx,rapiddns,subdomaincenter,subdomainfinderc99,threatminer,urlscan,yahoo -f th-tmp &> /dev/null
+cat th-tmp.json | jq .hosts | cut -f2 -d '"' | cut -f1 -d ':' | head -n -1 | tail -n +2 > out1
 cat out1 >> subs1
 
-assetfinder -subs-only $1 > out2
+subfinder -timeout 10 -t 20 -silent -all -d $1 -o out2 &> /dev/null
 cat out2 >> subs2
 
-sort -u subs1 subs2 > allsubs
+assetfinder -subs-only $1 > out3
+cat out3 >> subs3
+
+sort -u subs1 subs2 subs3 > allsubs
 
 ### HOST DISCOVERY ###
 
@@ -53,7 +57,7 @@ echo '' >> ../$results/all-results
 echo '*** ADDITIONAL PORTS ***' >> ../$results/all-results
 echo '' >> ../$results/all-results
 
-naabu -l allsubs -p 21,445,1433,3000,3306,3389,5000,8000,8080,8443,10000 -rate 100 -silent >> ../$results/all-results
+naabu -l allsubs -p 21,23,445,1433,3000,3306,3389,5000,8000,8080,8443,10000 -rate 100 -silent >> ../$results/all-results
 
 ### SCREENSHOTS ###
 
