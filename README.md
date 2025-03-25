@@ -4,6 +4,8 @@ Recon tool for bug bounty hunting
 
 <h2>Requirements</h2>
 
+[theharvester](https://github.com/laramies/theHarvester)
+
 [subfinder](https://github.com/projectdiscovery/subfinder)
 
 [assetfinder](https://github.com/tomnomnom/assetfinder)
@@ -13,6 +15,8 @@ Recon tool for bug bounty hunting
 [naabu](https://github.com/projectdiscovery/naabu)
 
 [gowitness](https://github.com/sensepost/gowitness)
+
+jq
 
 <h2>Features</h2>
 
